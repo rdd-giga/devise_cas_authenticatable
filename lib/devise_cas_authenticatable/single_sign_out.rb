@@ -57,7 +57,7 @@ module DeviseCasAuthenticatable
           current_session_store.instance_variable_get(:@pool).del(sid)
           true
         else
-          log.error "Cannot process logout request because this Rails application's session store is "+
+          logger.error "Cannot process logout request because this Rails application's session store is "+
                 " #{current_session_store.name.inspect} and is not a support session store type for Single Sign-Out."
           false
         end
