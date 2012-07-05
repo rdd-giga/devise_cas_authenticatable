@@ -41,7 +41,7 @@ module DeviseCasAuthenticatable
       end
 
       def current_session_store
-        app = Rails.application.app
+        app = Rails.application
         begin
           app = app.instance_variable_get :@app
         end until app.nil? or app.class == session_store_class
