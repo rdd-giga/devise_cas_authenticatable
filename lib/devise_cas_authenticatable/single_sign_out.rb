@@ -49,7 +49,15 @@ module DeviseCasAuthenticatable
       end
 
       def destroy_session_by_id(sid)
-        if session_store_class == ActiveRecord::SessionStore
+        if session_store_class.name == "ActionDispatch::Session::RedisStore"
+          @pool ||= begin
+            redis_server = ::Rails.application.config.session_options[:redis_server]
+            redis_server ||= ::Rails.application.config.session_options[:servers]
+            redis_server ||= "redis://127.0.0.1:6379/0/rack:session"
+            ::Redis::Factory.create redis_server
+          end
+          @pool.del(sid)
+        elsif session_store_class == ActiveRecord::SessionStore
           session = current_session_store::Session.find_by_session_id(sid)
           session.destroy if session
           true
