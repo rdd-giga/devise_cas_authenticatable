@@ -59,7 +59,7 @@ module DeviseCasAuthenticatable
             end
           end
           @pool.delete(sid)
-        if session_store_class.name == "ActionDispatch::Session::RedisStore"
+        elsif session_store_class.name == "ActionDispatch::Session::RedisStore"
           @pool ||= begin
             redis_server = ::Rails.application.config.session_options[:redis_server]
             redis_server ||= ::Rails.application.config.session_options[:servers]
