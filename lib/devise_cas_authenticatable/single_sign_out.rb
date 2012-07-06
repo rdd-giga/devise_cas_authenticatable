@@ -49,6 +49,16 @@ module DeviseCasAuthenticatable
       end
 
       def destroy_session_by_id(sid)
+        if session_store_class.name == "ActionDispatch::Session::DalliStore"
+          @pool ||= begin
+            if Rails.application.config.session_options[:cache]
+              Rails.application.config.session_options[:cache]
+            else
+              opts = {:namespace => 'rack:session'}.merge(Rails.application.config.session_options)
+              ::Dalli::Client.new opts[:memcache_server], opts
+            end
+          end
+          @pool.delete(sid)
         if session_store_class.name == "ActionDispatch::Session::RedisStore"
           @pool ||= begin
             redis_server = ::Rails.application.config.session_options[:redis_server]
